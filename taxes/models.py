@@ -3,14 +3,20 @@ from django.db import models
 # Create your models here.
 
 class Payable(models.Model):
+    LIGHT = 'L'
+    GAS = 'G'
     SERVICE_CHOICES = [
-        ('L', 'Luz'),
-        ('G', 'Gas'),
+        (LIGHT, 'Luz'),
+        (GAS, 'Gas'),
     ]
+    
+    PENDING = 'PE'
+    PAID = 'PA'
     PAYMENT_CHOICES = [
-        ('PE', 'Pending'),
-        ('PA', 'Paid'),
+        (PENDING, 'Pending'),
+        (PAID, 'Paid'),
     ]
+    
     barcode = models.CharField(max_length=20, primary_key=True)
     service_type = models.CharField(max_length=2, choices=SERVICE_CHOICES)
     description = models.CharField(max_length=50)
