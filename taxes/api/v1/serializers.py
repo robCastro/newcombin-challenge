@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from taxes.models import Payable
+from taxes.models import Payable, Transaction
 
 class PayableListSerializer(serializers.ModelSerializer):
     """
@@ -24,3 +24,23 @@ class PayableSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payable
         fields = '__all__'
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+    """Serializer to create transactions."""
+    class Meta:
+        model = Transaction
+        fields = '__all__'
+    
+    def validate(self, data):
+        if data['payment_method'] != Transaction.CASH and not data['card_number']:
+            raise serializers.ValidationError({'payment_method': ['The card number is required']})
+        return super().validate(data)
+
+
+class TransactionSummarySerializer(serializers.Serializer):
+    """Serializer to summarise the transactions by day."""
+    payment_date__date = serializers.DateField()
+    total = serializers.DecimalField(max_digits=10, decimal_places=2)
+    count = serializers.IntegerField()
+    
